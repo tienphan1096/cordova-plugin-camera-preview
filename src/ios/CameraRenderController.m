@@ -75,6 +75,9 @@
 - (void) viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
 
+  self.frameWidth = self.view.frame.size.width;
+  self.frameHeight = self.view.frame.size.height;
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(appplicationIsActive:)
                                                name:UIApplicationDidBecomeActiveNotification
@@ -163,17 +166,17 @@
     CIImage *image = [CIImage imageWithCVPixelBuffer:pixelBuffer];
 
 
-    CGFloat scaleHeight = self.view.frame.size.height/image.extent.size.height;
-    CGFloat scaleWidth = self.view.frame.size.width/image.extent.size.width;
+    CGFloat scaleHeight = self.frameHeight/image.extent.size.height;
+    CGFloat scaleWidth = self.frameWidth/image.extent.size.width;
 
     CGFloat scale, x, y;
     if (scaleHeight < scaleWidth) {
       scale = scaleWidth;
       x = 0;
-      y = ((scale * image.extent.size.height) - self.view.frame.size.height ) / 2;
+      y = ((scale * image.extent.size.height) - self.frameHeight ) / 2;
     } else {
       scale = scaleHeight;
-      x = ((scale * image.extent.size.width) - self.view.frame.size.width )/ 2;
+      x = ((scale * image.extent.size.width) - self.frameWidth )/ 2;
       y = 0;
     }
 
@@ -191,7 +194,7 @@
 
     // crop
     CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
-    CIVector *cropRect = [CIVector vectorWithX:0 Y:0 Z:self.view.frame.size.width W:self.view.frame.size.height];
+    CIVector *cropRect = [CIVector vectorWithX:0 Y:0 Z:self.frameWidth W:self.frameHeight];
     [cropFilter setValue:transformedImage forKey:kCIInputImageKey];
     [cropFilter setValue:cropRect forKey:@"inputRectangle"];
     CIImage *croppedImage = [cropFilter outputImage];
@@ -210,7 +213,7 @@
     } else {
       pointScale = [[UIScreen mainScreen] scale];
     }
-    CGRect dest = CGRectMake(0, 0, self.view.frame.size.width*pointScale, self.view.frame.size.height*pointScale);
+    CGRect dest = CGRectMake(0, 0, self.frameWidth*pointScale, self.frameHeight*pointScale);
 
     [self.ciContext drawImage:croppedImage inRect:dest fromRect:[croppedImage extent]];
     [self.context presentRenderbuffer:GL_RENDERBUFFER];

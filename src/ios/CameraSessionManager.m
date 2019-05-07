@@ -93,6 +93,8 @@
   // If this fails, video input will just stream blank frames and the user will be notified. User only has to accept once.
   [self checkDeviceAuthorizationStatus];
 
+  AVCaptureVideoOrientation currentOrientation = [self getCurrentOrientation];
+
   dispatch_async(self.sessionQueue, ^{
       NSError *error = nil;
       BOOL success = TRUE;
@@ -146,7 +148,7 @@
         [self.session addOutput:dataOutput];
       }
 
-      [self updateOrientation:[self getCurrentOrientation]];
+      [self updateOrientation:currentOrientation];
       self.device = videoDevice;
 
       completion(success);

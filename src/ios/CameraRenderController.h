@@ -32,6 +32,8 @@
 @property BOOL dragEnabled;
 @property BOOL tapToTakePicture;
 @property BOOL tapToFocus;
+@property int frameWidth;
+@property int frameHeight;
 @property (nonatomic, assign) id delegate;
 
 @end
